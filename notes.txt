@@ -1,0 +1,85 @@
+const CORPUS = {
+    people: [
+       new Entry({name:"John",age:25}),
+       new Entry({name:"Mary",age:27}),
+       new Entry({name:"Susan",age:45}),
+       new Entry({name:"Atil",age:35})
+    ],
+    events: [
+        new Entry({
+            day:"Friday",
+            participants:{d:"people",i:[1,2,3]}
+        }),
+        new Entry({
+            day:["Tuesday","Thursday"],
+            participants:{d:"people",i:[3,4]}
+        }),
+        new Entry({
+            day:["Monday","Wednesday"],
+            participants:{d:"people",i:2}
+        })
+    ]
+}
+
+
+const func_EXIST = new Condition(function(key,entry){
+    return Object.keys(entry).includes(key.keyname)
+})
+const func_IS = function(refl){
+    return new Condition(function(key,entry){
+        if (!Object.keys(entry).includes(key.keyname)){
+            return false
+        }
+        return entry.applykey(key).equals(refl)
+    })
+}
+const func_DICT = function(key){
+    return key.dict(CORPUS)
+}
+const func_WHERE = function(refl,filter){
+    return filter.apply(refl,CORPUS)
+}
+const func_CONTAINS = function(refl){
+    return new Condition(function(key,entry){
+        if (!Object.keys(entry).includes(key.keyname)){
+            console.log(`${key.keyname} is not a key`)
+            return false
+        }
+        return entry.applykey(key).containsome(refl)
+    })
+}
+
+
+
+    <br><br>
+    <textarea name="program" id="program" cols="100" rows="10">CORPUS WHERE kind MATCHES "morph" GET text</textarea>
+    <br><br>
+    <button id="display" onclick="checkTextBox()">Display</button> <span id="displaynotes"></span>
+    <p id="resultnotes"></p>
+    <div id="results"></div>
+
+
+    else {
+    let entrylist = []
+    let entrylistkeys = []
+    this[property].spellout(corpus).forEach(subentry => {
+        entrylist.push(subentry.display(corpus))
+        Object.keys(subentry).forEach(subproperty => {
+            if (!entrylistkeys.includes(subproperty)){
+                entrylistkeys.push(subproperty)
+            }
+        });
+    });
+    console.log(entrylist,entrylistkeys)
+    entrylistkeys.forEach(newkey => {
+        let smalllist = []
+        entrylist.forEach(entry => {
+            if (entry[newkey] != undefined){
+                smalllist.push(entry[newkey])
+            }
+        });
+        res[`${this.property}_${newkey}`] = smalllist.join(corpus.delimiters[this[property].d])
+    });
+    
+    
+}
